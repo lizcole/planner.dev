@@ -1,0 +1,32 @@
+body {
+	margin: 0px auto;
+	width:50%;
+	background: url(../images/seamless_paper_texture.png);
+	text-align: center;
+}
+
+#scribble {
+	font-family: 'Shadows Into Light', cursive;
+	font-size: 23px;
+}
+.header {
+	color: #1ec0a7;
+	/*text-decoration: underline;*/
+	font-family: 'Special Elite', cursive;
+  	text-shadow: 2px 2px 0px rgba(0,0,0,0.1);;
+  	font-size: 3em;
+}
+
+.center {
+	margin: 0px auto;
+	width: 58% ;
+}
+
+.newitem{
+	font-family: 'Quicksand', sans-serif;
+	border: 5px double black;
+	height: 30px;
+	width: 300px;
+	padding: 10px;
+	margin: 0px auto;
+}

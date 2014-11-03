@@ -1,0 +1,42 @@
+body {
+	background: url(../images/seamless_paper_texture.png);
+}
+#header {
+	font-family: 'Special Elite', cursive;
+	text-align: center;
+	font-size: 3em;
+}
+
+tr, label, button {
+	font-family: 'Old Standard TT', serif;
+}
+
+td {
+	font-family: 'Shadows Into Light', cursive;
+	font-size: 25px;
+}
+
+#border {
+	border-style: dotted;
+	border-width: 2px;
+	padding: 20px;
+
+}
+
+.glyphicon-remove{
+	color: #ecce90;
+}
+.glyphicon-remove:hover{
+	color:red;
+	text-decoration: none;
+}
+
+#rolodex {
+	position: absolute;
+	margin-left: 450px;
+	margin-top: 90px;
+}
+
+.table {
+	background-color: #1585cd;
+}
