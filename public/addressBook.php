@@ -14,119 +14,11 @@
 	<link rel="stylesheet" type="text/css" href="css/addressbook.css">
 <?
 
-class AddressBook{
-
-	 public $filename = '';
-
-	 public function __construct($filename='address_book.csv') {
-	 	$this->filename = $filename;
-	 }
-
-
-	// function to save to csv file
-		public function saveCsv($array) {
-			
-			$handle = fopen($this->filename, 'w');
-
-			foreach($array as $row) {
-				fputcsv($handle, $row);
-			}
-
-			fclose($handle);
-		}
-
-	// function to open the csv file
-		public function openCsv() {
-			$addressBook = [];
-			$handle = fopen($this->filename, 'r');
-
-			while(!feof($handle)) {
-				$row = fgetcsv($handle);
-
-				if(!empty($row)) {
-					$addressBook[] = $row;
-				}
-			}
-			fclose($handle);
-			return $addressBook;
-
-		}
-
-	// function to loop through array and validates if a field is left empty
-		public function isNotValid($array) {
-			foreach($array as $value) {
-				if(empty($value)) {
-					return true;
-				}
-			}
-		}
-	// This function will run through all of the $_POST input from the from and input it into
-		// an array called $contactList.
-		public function replacePost($array) {
-			$contactList = [];
-			if(isset($array['name'])){
-					$contactList[] = $array['name'];
-				}
-				if(isset($array['address'])){
-					$address = $array['address'];
-					$contactList[] = $address;
-				}
-				if(isset($array['city'])){
-					$city = $array['city'];
-					$contactList[] = $city;
-				}
-				if(isset($array['state'])){
-					$state = $array['state'];
-					$contactList[] = $state;
-				}
-				if(isset($array['zip'])){
-					$zip = $array['zip'];
-					$contactList[] = $zip;
-				}
-				if(isset($array['phoneNumber'])){
-					$phoneNumber = $array['phoneNumber'];
-					$contactList[] = $phoneNumber;
-				}
-				if(isset($array['email'])){
-					$email = $array['email'];
-					$contactList[] = $email;
-				}
-
-				return $contactList;
-		}
-
-}
+require_once 'include/addressbook_include.php';
 
 //call the method openCsv inside the class AddressBook
 	$addressbk = new AddressBook();
 	$contactList = $addressbk->openCsv();
-
-
-			if(count($_FILES) > 0 && $_FILES['addressFile']['error'] == UPLOAD_ERR_OK) {
-				var_dump($_FILES);
-				//if the file meets the above checks then...
-				
-				//set destination for uploads to specific to directory
-				$uploadDir = '/vagrant/sites/planner.dev/public/uploads/';
-
-				//set the uploaded file to a var for usability
-				$uploadFile = basename($_FILES['addressFile']['name']);
-				echo $uploadFile;
-
-				//create a new filename var for the saved upload combining the dir var and the uploadfile var
-				$savedFile = $uploadDir . $uploadFile;
-				echo $savedFile;
-
-				//move the newly craated var containing the correct dir and the file name to the upload directory
-				move_uploaded_file($_FILES['addressFile']['tmp_name'], $savedFile);
-
-				// open new file return array
-				$upload_contacts = $addressbk->openCsv('uploads/' . $uploadFile);
-				var_dump($upload_contacts);
-
-				// merge with upload if exists
-				$contactList = array_merge($contactList, $upload_contacts);
-				$addressbk->saveCsv($contactList);
 			
 
 // if any of the fields are empty respond with isNotValid function, if all requirments met then
@@ -135,24 +27,49 @@ class AddressBook{
 	// functionality to have mutiple contacts as their own array all read within
 	// one array. Then save the arrays with one array to a .csv file.
 
-		if(!empty($_POST)){
-			//var_dump($_POST);
-			if($addressbk->isNotValid($_POST)) {
-
-				$error = "Please fill out all fields";
-			}
-			else {
-
-				$contactList[] = $addressbk->replacePost($_POST);
-				$addressbk->saveCsv($contactList);	
-			} 
+	if(!empty($_POST)){
+		//var_dump($_POST);
+		if($addressbk->isNotValid($_POST)) {
+			$error = "Please fill out all fields";
 		}
+		else {
+			$contactList[] = $addressbk->replacePost($_POST);
+			$addressbk->saveCsv($contactList);	
+		} 
 	}
+	
 
 	if(isset($_GET['id'])) {
 		$id = $_GET['id'];
 		unset($contactList[$id]);
 		$contactList = array_values($contactList);
+		$addressbk->saveCsv($contactList);
+	}
+
+	if(count($_FILES) > 0 && $_FILES['addressFile']['error'] == UPLOAD_ERR_OK) {
+		var_dump($_FILES);
+		//if the file meets the above checks then...
+		
+		//set destination for uploads to specific to directory
+		$uploadDir = '/vagrant/sites/planner.dev/public/uploads/';
+
+		//set the uploaded file to a var for usability
+		$uploadFile = basename($_FILES['addressFile']['name']);
+		// echo $uploadFile;
+
+		//create a new filename var for the saved upload combining the dir var and the uploadfile var
+		$savedFile = $uploadDir . $uploadFile;
+		echo $savedFile;
+
+		//move the newly craated var containing the correct dir and the file name to the upload directory
+		move_uploaded_file($_FILES['addressFile']['tmp_name'], $savedFile);
+
+		// open new file return array
+		$upload_contacts = $addressbk->openCsv('uploads/' . $uploadFile);
+		var_dump($upload_contacts);
+
+		// merge with upload if exists
+		$contactList = array_merge($contactList, $upload_contacts);
 		$addressbk->saveCsv($contactList);
 	}
 ?>
@@ -175,7 +92,7 @@ class AddressBook{
 	</form>	
 	<?if (isset($savedFile)): ?>
 		<p>
-			<a href="/uploads/<?= $uploadFile ?>">Download me?</a>
+			<a href="/uploads/<?= $uploadFile ?>">Download me</a>
 		</p>
 	<? endif ?>
 			<!-- Create forms for user to input information for table -->

@@ -1,55 +1,7 @@
 <?php
 
-	class TodoList {
-
-		public $filename = '';
-
-		public function __construct($filename = 'todo_list.txt') {
-			$this->filename = $filename;
-		}
-
-		public function openFile() {
-		    // open file
-		    // $filename = getInput();
-		    if(file_exists($this->filename) && filesize($this->filename) > 0) {
-		    	$openFile = fopen($this->filename, 'r');
-				// var_dump($openFile);
-		    	$readFile = trim(fread($openFile, filesize($this->filename)));
-		    	trim($readFile);
-		    	//change items in .txt file to an array
-		    	$fileArray = explode("\n", $readFile);
-		    	//close the opened file
-		    	fclose($openFile);
-		    	// add file to exisiting list
-		    	return $fileArray;
-		    } 
-		    else { 
-		    	$fileArray = [];
-		    	echo 'Please Enter Item';
-		    	return $fileArray;
-		    }
-
-		}
-
-		//this function saves items that are added to the list to the existing .txt file
-		public function saveFile($items) {
-
-				$items = $this->sanitize($items);
-		        $openFile = fopen($this->filename, 'w');
-		       	$string = implode("\n", $items);
-		       	fwrite($openFile, $string);
-		   		fclose($openFile);
-			}
-
-		//this function will sanitize all arrays from user input
-		public function sanitize($items) {
-			foreach($items as $key => $value) {
-				$items[$key] = htmlspecialchars(strip_tags($value));
-			}
-			return $items;
-		}
-
-	}
+//call the todolist_inlude.php file and require it to run the following script
+require_once 'include/todolist_include.php';
 
 //call the method openFile inside the class TodoList
 	$todolist = new TodoList();
@@ -93,7 +45,8 @@
 		move_uploaded_file($_FILES['file1']['tmp_name'], $savedFile);
 
 		// open new file return array
-		$upload_todo = openFile('uploads/' . $uploadFile);
+		$upload_todo = $todolist->openFile('uploads/' . $uploadFile);
+		var_dump($upload_todo);
 
 		// merge with upload if exists
 		$todo_array = array_merge($todo_array, $upload_todo);
