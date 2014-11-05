@@ -1,8 +1,21 @@
 body {
-	margin: 0px auto;
-	width:50%;
+	/*margin: 0px auto;*/
+	/*width:50%;*/
 	background: url(../images/seamless_paper_texture.png);
 	text-align: center;
+}
+
+.page-header{
+	border-bottom: 2px solid #000;
+	background-color: white;
+}
+
+ul {
+	list-style: none;
+}
+
+#border {
+	font-size: 20px;
 }
 
 #scribble {
@@ -17,16 +30,24 @@ body {
   	font-size: 3em;
 }
 
-.center {
+#list {
 	margin: 0px auto;
-	width: 58% ;
+	width: 60% ;
+	background: url(../images/linedpaper.png);
+	border: 1px outset #000;
+}
+
+#upload{
+	margin: 0px auto;
+	width: 60%;
 }
 
 .newitem{
 	font-family: 'Quicksand', sans-serif;
-	border: 5px double black;
-	height: 30px;
+	font-size: 20px;
+	/*border: 5px double black;
+	height: 60px;
 	width: 300px;
 	padding: 10px;
-	margin: 0px auto;
+	margin: 0px auto;*/
 }

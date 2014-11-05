@@ -8,7 +8,7 @@ require_once 'include/todolist_include.php';
 	$todo_array = $todolist->openFile();
 	//assign the todo list array to the openFile function to add the preexisting items
 
-	var_dump($todo_array);
+	// var_dump($todo_array);
 
 	//this unsets(deletes) an item from the array
 	if(isset($_GET['id'])) {
@@ -46,7 +46,7 @@ require_once 'include/todolist_include.php';
 
 		// open new file return array
 		$upload_todo = $todolist->openFile('uploads/' . $uploadFile);
-		var_dump($upload_todo);
+		// var_dump($upload_todo);
 
 		// merge with upload if exists
 		$todo_array = array_merge($todo_array, $upload_todo);
@@ -79,9 +79,20 @@ require_once 'include/todolist_include.php';
 	<div class='container'>
 	<body>
 
-			<h1 class="header">ToDo List</h1>
-			
-			<div class="center">
+			<h1 class="header jumbotron">ToDo List</h1>
+
+			<!-- this form allows for new items to be added to the todo list -->
+			<div class="newitem">
+				<form method="POST" action="/todo_list.php">
+					<label for="newitem">
+						New Item
+						<input id="new_item" class='form-control input-sm' name="new_item" type="text">
+					</label>
+					<button type="submit" class="btn btn-success btn-xs">Add</button>
+				</form>
+			</div>
+
+			<div id="list">
 				<ul id="scribble">
 					<!-- creating a foreach loop in php within the html so php is actually in control
 					of the list items being added -->
@@ -93,19 +104,7 @@ require_once 'include/todolist_include.php';
 				</ul>
 			</div>
 
-			<h2 class="header">Add Item to List</h2>
-
-			<!-- this form allows for new items to be added to the todo list -->
-			<div class="newitem">
-				<form method="POST" action="/todo_list.php">
-					<label for="newitem">
-						New Item:
-						<input id="new_item" name="new_item" type="text">
-					</label>
-					<button type="submit">Add</button>
-				</form>
-			</div>
-
+			<div id='upload'>
 			<!-- this form allows for media to be uploaded -->
 			<form method = 'POST' enctype="multipart/form-data" action='/todo_list.php'>
 				<p>
@@ -126,8 +125,11 @@ require_once 'include/todolist_include.php';
 					<a href='/uploads/<?= $uploadFile ?>'>Here</a>
 				</p>
 			<? endif ?>
-
-	
+			</div>
+			
+<!-- JS script cdn and link to js sheet -->
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src='js/todo_list.js'></script>
 
 	</body>
 	</div>

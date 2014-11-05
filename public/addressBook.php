@@ -47,7 +47,7 @@ require_once 'include/addressbook_include.php';
 	}
 
 	if(count($_FILES) > 0 && $_FILES['addressFile']['error'] == UPLOAD_ERR_OK) {
-		var_dump($_FILES);
+		// var_dump($_FILES);
 		//if the file meets the above checks then...
 		
 		//set destination for uploads to specific to directory
