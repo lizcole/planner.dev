@@ -1,10 +1,12 @@
 <?php
 
 //call the todolist_inlude.php file and require it to run the following script
-require_once 'include/todolist_include.php';
+require_once '../include/todolist_include.php';
+require_once '../include/file_store.php';
+
 
 //call the method openFile inside the class TodoList
-	$todolist = new TodoList();
+	$todolist = new TodoList($filename = 'todo_list.txt');
 	$todo_array = $todolist->openFile();
 	//assign the todo list array to the openFile function to add the preexisting items
 
@@ -96,6 +98,8 @@ require_once 'include/todolist_include.php';
 				<ul id="scribble">
 					<!-- creating a foreach loop in php within the html so php is actually in control
 					of the list items being added -->
+					
+				
 					<? foreach($todo_array as $key => $value): ?>
 					<li>
 						<?= htmlspecialchars(strip_tags($value)); ?> | <a href="?id=<?= $key ?>">Complete</a>

@@ -14,10 +14,11 @@
 	<link rel="stylesheet" type="text/css" href="css/addressbook.css">
 <?
 
-require_once 'include/addressbook_include.php';
+require_once '../include/addressbook_include.php';
+require_once '../include/file_store.php';
 
 //call the method openCsv inside the class AddressBook
-	$addressbk = new AddressBook();
+	$addressbk = new AddressBook($filename = 'address_book.csv');
 	$contactList = $addressbk->openCsv();
 			
 
@@ -64,8 +65,9 @@ require_once 'include/addressbook_include.php';
 		//move the newly craated var containing the correct dir and the file name to the upload directory
 		move_uploaded_file($_FILES['addressFile']['tmp_name'], $savedFile);
 
+		$uploadCSV = new AddressBook('uploads/' . $uploadFile);
 		// open new file return array
-		$upload_contacts = $addressbk->openCsv('uploads/' . $uploadFile);
+		$upload_contacts = $uploadCSV->openCsv();
 		var_dump($upload_contacts);
 
 		// merge with upload if exists
