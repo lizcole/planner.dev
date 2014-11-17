@@ -2,21 +2,13 @@
 
 require_once 'file_store.php';
 
-class AddressBook extends Filestore{
+class AddressBook extends Filestore {
+ 
+	public function __construct($filename) {
+		$newFile = strtolower($filename);
+		parent::__construct($newFile);
+	}
 
-
-	// function to save to csv file
-		public function saveCsv($array) {
-
-			return $this->writeCSV($array);
-		
-		}
-
-	// function to open the csv file
-		public function openCsv() {
-
-			return $this->readCSV();
-		}
 
 	// function to loop through array and validates if a field is left empty
 		public function isNotValid($array) {

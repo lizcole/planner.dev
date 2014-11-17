@@ -1,16 +1,18 @@
 <html>
 <head>
 	<title>Adress Book</title>
-<!-- Latest compiled and minified CSS -->
+	
+	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-<!-- Latest compiled and minified JavaScript -->
+	
+	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
-<!-- Google fonts -->
+	<!-- Google fonts -->
 	<link href='http://fonts.googleapis.com/css?family=Old+Standard+TT:400,400italic,700|Special+Elite' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=Shadows+Into+Light' rel='stylesheet' type='text/css'>
 
-<!-- CSS stylesheet -->
+	<!-- CSS stylesheet -->
 	<link rel="stylesheet" type="text/css" href="css/addressbook.css">
 <?
 
@@ -18,62 +20,63 @@ require_once '../include/addressbook_include.php';
 require_once '../include/file_store.php';
 
 //call the method openCsv inside the class AddressBook
-	$addressbk = new AddressBook($filename = 'address_book.csv');
-	$contactList = $addressbk->openCsv();
+$addressbk = new AddressBook('address_book.csv');
+
+$contactList = $addressbk->read();
 			
-
 // if any of the fields are empty respond with isNotValid function, if all requirments met then
-	// push the $contactList array created with the replacePost function to an
-	// empty array $contactList to create and array within an array to provid the
-	// functionality to have mutiple contacts as their own array all read within
-	// one array. Then save the arrays with one array to a .csv file.
+// push the $contactList array created with the replacePost function to an
+// empty array $contactList to create and array within an array to provid the
+// functionality to have mutiple contacts as their own array all read within
+// one array. Then save the arrays with one array to a .csv file.
 
-	if(!empty($_POST)){
-		//var_dump($_POST);
-		if($addressbk->isNotValid($_POST)) {
-			$error = "Please fill out all fields";
-		}
-		else {
-			$contactList[] = $addressbk->replacePost($_POST);
-			$addressbk->saveCsv($contactList);	
-		} 
+if(!empty($_POST)){
+	//var_dump($_POST);
+	if($addressbk->isNotValid($_POST)) {
+		$error = "Please fill out all fields";
 	}
+	]else {
+		$contactList[] = $addressbk->replacePost($_POST);
+		$addressbk->write($contactList);	
+	} 
+}
 	
 
-	if(isset($_GET['id'])) {
+if(isset($_GET['id'])) {
 		$id = $_GET['id'];
 		unset($contactList[$id]);
 		$contactList = array_values($contactList);
-		$addressbk->saveCsv($contactList);
+		$addressbk->write($contactList);
 	}
 
-	if(count($_FILES) > 0 && $_FILES['addressFile']['error'] == UPLOAD_ERR_OK) {
-		// var_dump($_FILES);
-		//if the file meets the above checks then...
+if(count($_FILES) > 0 && $_FILES['addressFile']['error'] == UPLOAD_ERR_OK) {
+	// var_dump($_FILES);
+	//if the file meets the above checks then...
 		
-		//set destination for uploads to specific to directory
-		$uploadDir = '/vagrant/sites/planner.dev/public/uploads/';
+	//set destination for uploads to specific to directory
+	$uploadDir = '/vagrant/sites/planner.dev/public/uploads/';
 
-		//set the uploaded file to a var for usability
-		$uploadFile = basename($_FILES['addressFile']['name']);
-		// echo $uploadFile;
+	//set the uploaded file to a var for usability
+	$uploadFile = basename($_FILES['addressFile']['name']);
+	// echo $uploadFile;
 
-		//create a new filename var for the saved upload combining the dir var and the uploadfile var
-		$savedFile = $uploadDir . $uploadFile;
-		echo $savedFile;
+	//create a new filename var for the saved upload combining the dir var and the uploadfile var
+	$savedFile = $uploadDir . $uploadFile;
+	echo $savedFile;
 
-		//move the newly craated var containing the correct dir and the file name to the upload directory
-		move_uploaded_file($_FILES['addressFile']['tmp_name'], $savedFile);
+	//move the newly craated var containing the correct dir and the file name to the upload directory
+	move_uploaded_file($_FILES['addressFile']['tmp_name'], $savedFile);
 
-		$uploadCSV = new AddressBook('uploads/' . $uploadFile);
-		// open new file return array
-		$upload_contacts = $uploadCSV->openCsv();
-		var_dump($upload_contacts);
+	$uploadCSV = new AddressBook('uploads/' . $uploadFile);
+	// open new file return array
+	$upload_contacts = $uploadCSV->read();
+	// var_dump($upload_contacts);
 
-		// merge with upload if exists
-		$contactList = array_merge($contactList, $upload_contacts);
-		$addressbk->saveCsv($contactList);
-	}
+	// merge with upload if exists
+	$contactList = array_merge($contactList, $upload_contacts);
+	$addressbk->write($contactList);
+}
+
 ?>
 </head>
 <div class='container'>
@@ -92,12 +95,14 @@ require_once '../include/file_store.php';
 			<input type='submit' value='upload'>
 		</p>
 	</form>	
+
 	<?if (isset($savedFile)): ?>
 		<p>
 			<a href="/uploads/<?= $uploadFile ?>">Download me</a>
 		</p>
 	<? endif ?>
-			<!-- Create forms for user to input information for table -->
+
+	<!-- Create forms for user to input information for table -->
 	<form role='form' method= "POST" action="addressBook.php" id='border' class='img-rounded'>
 		<div class ='row'>
 			<div class="form-group">
@@ -211,37 +216,37 @@ require_once '../include/file_store.php';
 			<button class='col-md-offset-1' type='submit' class="btn btn-default">Add New Contact</button>
 		</div>
 
-		</form>
+	</form>
 
-		<table class="table table-responsive table-striped" >
-			<!-- Create Table for input to be placed -->
-			
-				<tr>	
-					<th>- Name -</th>
-					<th>- Home Address -</th>
-					<th>- City -</th>
-					<th>- State -</th>
-					<th>- Zip -</th>
-					<th>- Phone Number -</th>
-					<th>- Email Address -</th>
-					<th></th>
-				</tr>
-				<!-- loop through each array item and print each in a table row  -->
-				<? foreach($contactList as $key => $contact): ?>
-					<tr>
-						<?php foreach ($contact as $value): ?>						
-							<td><?= htmlspecialchars(strip_tags($value)) ?></td>
-						<?php endforeach ?>
-							<td> <a href="?id=<?= $key ?>" class="glyphicon glyphicon-remove"></a> </td>
-					</tr>		
-				<? endforeach ?>
+	<!-- Create Table for input to be placed -->
+	<table class="table table-responsive table-striped" >
+		<tr>	
+			<th>- Name -</th>
+			<th>- Home Address -</th>
+			<th>- City -</th>
+			<th>- State -</th>
+			<th>- Zip -</th>
+			<th>- Phone Number -</th>
+			<th>- Email Address -</th>
+			<th></th>
+		</tr>
+
+		<!-- loop through each array item and print each in a table row  -->
+		<? foreach($contactList as $key => $contact): ?>
+			<tr>
+				<?php foreach ($contact as $value): ?>						
+					<td><?= htmlspecialchars(strip_tags($value)) ?></td>
+				<?php endforeach ?>
+					<td> <a href="?id=<?= $key ?>" class="glyphicon glyphicon-remove"></a> </td>
+			</tr>		
+		<? endforeach ?>
 				
-		</table>
+	</table>
 
-		<?if(isset($error)){
-			echo $error;
-			} 
-		?>
+	<?if(isset($error)){
+		echo $error;
+	} 
+	?>
 </body>
 </div>
 </html>

@@ -6,56 +6,54 @@ require_once '../include/file_store.php';
 
 
 //call the method openFile inside the class TodoList
-	$todolist = new TodoList($filename = 'todo_list.txt');
-	$todo_array = $todolist->openFile();
-	//assign the todo list array to the openFile function to add the preexisting items
+$todolist = new TodoList($filename = 'todo_list.txt');
+$todo_array = $todolist->read();
 
-	// var_dump($todo_array);
+//assign the todo list array to the openFile function to add the preexisting items
+// var_dump($todo_array);
 
-	//this unsets(deletes) an item from the array
-	if(isset($_GET['id'])) {
-		//assigning twice id because browser is complianing
-		$id = ' ';
-		$id = $_GET['id'];
-		unset($todo_array[$id]);
-		$todo_array = array_values($todo_array);
-		$todolist->saveFile($todo_array);
+//this unsets(deletes) an item from the array
+if(isset($_GET['id'])) {
+	//assigning twice id because browser is complianing
+	$id = ' ';
+	$id = $_GET['id'];
+	unset($todo_array[$id]);
+	$todo_array = array_values($todo_array);
+	$todolist->write($todo_array);
+}
+
+if(isset($_POST['new_item'])) {
+	// echo "add item: " . $_POST['new_item'];
+	$additem = $_POST['new_item'];
+	$todo_array[] = $additem;
+	$todolist->write($todo_array);
 	}
 
-	if(isset($_POST['new_item'])) {
-		// echo "add item: " . $_POST['new_item'];
-		$additem = $_POST['new_item'];
-		$todo_array[] = $additem;
-		$todolist->saveFile($todo_array);
-		}
-
-	//create a way for files that are uploaded to be saved
-		//this checks to make sure there is a file to upload and that there are no errors
-	if(count($_FILES) > 0 && $_FILES['file1']['error'] == UPLOAD_ERR_OK && $_FILES['file1']['type'] == 'text/plain') {
-		//if the file meets the above checks then...
-		
-		//set destination for uploads to specific to directory
-		$uploadDir = '/vagrant/sites/planner.dev/public/uploads/';
-
-		//set the uploaded file to a var for usability
-		$uploadFile = basename($_FILES['file1']['name']);
-
-		//create a new filename var for the saved upload combining the dir var and the uploadfile var
-		$savedFile = $uploadDir . $uploadFile;
-
-		//move the newly craated var containing the correct dir and the file name to the upload directory
-		move_uploaded_file($_FILES['file1']['tmp_name'], $savedFile);
-
-		// open new file return array
-		$upload_todo = $todolist->openFile('uploads/' . $uploadFile);
-		// var_dump($upload_todo);
-
-		// merge with upload if exists
-		$todo_array = array_merge($todo_array, $upload_todo);
-		$todolist->saveFile($todo_array);
-	}
-
+//create a way for files that are uploaded to be saved
+//this checks to make sure there is a file to upload and that there are no errors
+if(count($_FILES) > 0 && $_FILES['file1']['error'] == UPLOAD_ERR_OK && $_FILES['file1']['type'] == 'text/plain') {
+	//if the file meets the above checks then...
 	
+	//set destination for uploads to specific to directory
+	$uploadDir = '/vagrant/sites/planner.dev/public/uploads/';
+
+	//set the uploaded file to a var for usability
+	$uploadFile = basename($_FILES['file1']['name']);
+
+	//create a new filename var for the saved upload combining the dir var and the uploadfile var
+	$savedFile = $uploadDir . $uploadFile;
+
+	//move the newly craated var containing the correct dir and the file name to the upload directory
+	move_uploaded_file($_FILES['file1']['tmp_name'], $savedFile);
+
+	// open new file return array
+	$upload_todo = $todolist->read('uploads/' . $uploadFile);
+	// var_dump($upload_todo);
+
+	// merge with upload if exists
+	$todo_array = array_merge($todo_array, $upload_todo);
+	$todolist->write($todo_array);
+}
 	
 ?>
 <html>
@@ -64,22 +62,23 @@ require_once '../include/file_store.php';
 			<title>TODO List</title>
 
 	<!-- Latest compiled and minified CSS -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
 	<!-- Latest compiled and minified JavaScript -->
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 	
 	<!-- Google Fonts -->
-		<link href="http://fonts.googleapis.com/css?family=Oleo+Script" rel="stylesheet" type="text/css">
-		<link href='http://fonts.googleapis.com/css?family=Shadows+Into+Light' rel='stylesheet' type='text/css'>
-		<link href='http://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet' type='text/css'>
-		<link href='http://fonts.googleapis.com/css?family=Old+Standard+TT:400,400italic,700|Special+Elite' rel='stylesheet' type='text/css'>
+	<link href="http://fonts.googleapis.com/css?family=Oleo+Script" rel="stylesheet" type="text/css">
+	<link href='http://fonts.googleapis.com/css?family=Shadows+Into+Light' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Old+Standard+TT:400,400italic,700|Special+Elite' rel='stylesheet' type='text/css'>
 	
 	<!-- CSS Sheet -->
-		<link rel="stylesheet" type="text/css" href="css/style_sheet.css">
+	<link rel="stylesheet" type="text/css" href="css/style_sheet.css">
 
 	</head>
+	
 	<div class='container'>
-	<body>
+		<body>
 
 			<h1 class="header jumbotron">ToDo List</h1>
 
@@ -97,9 +96,7 @@ require_once '../include/file_store.php';
 			<div id="list">
 				<ul id="scribble">
 					<!-- creating a foreach loop in php within the html so php is actually in control
-					of the list items being added -->
-					
-				
+					of the list items being added -->			
 					<? foreach($todo_array as $key => $value): ?>
 					<li>
 						<?= htmlspecialchars(strip_tags($value)); ?> | <a href="?id=<?= $key ?>">Complete</a>
@@ -109,32 +106,32 @@ require_once '../include/file_store.php';
 			</div>
 
 			<div id='upload'>
-			<!-- this form allows for media to be uploaded -->
-			<form method = 'POST' enctype="multipart/form-data" action='/todo_list.php'>
-				<p>
-					<label for='file1'> File to upload:</label>
-					<input type='file' id='file1' name='file1'>
-				</p>
-				<!-- creat button to hit upload -->
-				<p>
-					<input type='submit' value='upload'>
-				</p>
-			</form>
-		<?
-			//run a check to see if the file was saved				
-			//if savedFile was set then show a link to the uploaded file
-	 		if(isset($savedFile)): ?>
-				<p>
-					You can download your file:
-					<a href='/uploads/<?= $uploadFile ?>'>Here</a>
-				</p>
-			<? endif ?>
+				<!-- this form allows for media to be uploaded -->
+				<form method = 'POST' enctype="multipart/form-data" action='/todo_list.php'>
+					<p>
+						<label for='file1'> File to upload:</label>
+						<input type='file' id='file1' name='file1'>
+					</p>
+					<!-- creat button to hit upload -->
+					<p>
+						<input type='submit' value='upload'>
+					</p>
+				</form>
+				<?
+				//run a check to see if the file was saved				
+				//if savedFile was set then show a link to the uploaded file
+		 		if(isset($savedFile)): ?>
+					<p>
+						You can download your file:
+						<a href='/uploads/<?= $uploadFile ?>'>Here</a>
+					</p>
+				<? endif ?>
 			</div>
-			
-<!-- JS script cdn and link to js sheet -->
-	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-	<script type="text/javascript" src='js/todo_list.js'></script>
+				
+		<!-- JS script cdn and link to js sheet -->
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script type="text/javascript" src='js/todo_list.js'></script>
 
-	</body>
+		</body>
 	</div>
-	</html>
+</html>
