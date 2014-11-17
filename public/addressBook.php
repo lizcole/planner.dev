@@ -35,7 +35,7 @@ if(!empty($_POST)){
 	if($addressbk->isNotValid($_POST)) {
 		$error = "Please fill out all fields";
 	}
-	]else {
+	else {
 		$contactList[] = $addressbk->replacePost($_POST);
 		$addressbk->write($contactList);	
 	} 
