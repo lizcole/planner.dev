@@ -9,11 +9,10 @@ require '../include/dbconnect.php';
 
 if(empty($_GET['page'])) {
 	$page_num = 1;
-	$offset_num = 0;
 } else {
 	$page_num = $_GET['page'];
-	$offset_num = ($page_num - 1) * 4;
 }
+	$offset_num = ($page_num - 1) * 10;
 
 $count = $dbc->query('SELECT COUNT(*) FROM items')->fetchColumn();
 
@@ -40,7 +39,7 @@ if(!empty($_POST['new_item'])) {
 	$error = 'Please Enter All Fields';
 }
 
-$object = $dbc->prepare("SELECT id, content FROM items LIMIT 4 OFFSET :offset_num");
+$object = $dbc->prepare("SELECT id, content FROM items LIMIT 10 OFFSET :offset_num");
 
 $object->bindValue(':offset_num', $offset_num, PDO::PARAM_INT);
 
@@ -98,14 +97,18 @@ $todo_list = $object->fetchAll(PDO::FETCH_ASSOC);
 				</ul>
 			</div>
 
-			<button type="button" class="btn btn-default btn-sm">
-				<a href="?page=<?= $page_num - 1 ?>">Previous</a>
-			</button>
+			<a href="?page=<?= $page_num - 1 ?>">
+				<button type="button" class="btn btn-default btn-sm">
+					Previous
+				</button>
+			</a>
 
-			<button type="button" class="btn btn-default btn-sm">
-				<a href="?page=<?= $page_num + 1 ?>">Next</a>
-			</button>
-				
+			<a href="?page=<?= $page_num + 1 ?>">
+				<button type="button" class="btn btn-default btn-sm">
+					Next
+				</button>
+			</a>	
+			
 		<!-- JS script cdn and link to js sheet -->
 		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		<script type="text/javascript" src='js/todo_list.js'></script>

@@ -11,11 +11,13 @@ class AddressBook extends Filestore {
 
 
 	// function to loop through array and validates if a field is left empty
-		public function isNotValid($array) {
+		public function validate($array) {
 			foreach($array as $value) {
 				if(empty($value)) {
-					return true;
-				}
+					throw new UnexpectedException('All items must be filled out');
+				} else if (strlen($value) >= 125) {
+					throw new UnexpectedException('Items cannot be longer than 125 characters');
+					}
 			}
 		}
 	// This function will run through all of the $_POST input from the from and input it into

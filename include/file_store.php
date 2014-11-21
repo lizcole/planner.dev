@@ -16,7 +16,6 @@ class Filestore
 
     public function read()
     {
-
        if ($this->isCSV == true) {
             return $this->readCSV();
         } else {
@@ -131,4 +130,7 @@ class Filestore
        fclose($handle);
 
     }
+
 }
+
+class UnexpectedException extends Exception {}

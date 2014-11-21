@@ -13,7 +13,7 @@ $todo_array = $todolist->read();
 // var_dump($todo_array);
 
 //this unsets(deletes) an item from the array
-if(isset($_GET['id'])) {
+if(isset($_GET['id'])){
 	//assigning twice id because browser is complianing
 	$id = ' ';
 	$id = $_GET['id'];
@@ -22,12 +22,25 @@ if(isset($_GET['id'])) {
 	$todolist->write($todo_array);
 }
 
-if(isset($_POST['new_item'])) {
+if(isset($_POST['new_item'])){
 	// echo "add item: " . $_POST['new_item'];
 	$additem = $_POST['new_item'];
-	$todo_array[] = $additem;
-	$todolist->write($todo_array);
+
+	try { 		
+		if(strlen($additem) <= 0){
+			throw new UnexpectedException('This item cannot be empty'); 
+		}	
+		if(strlen($additem) >= 240){
+			throw new UnexpectedException('This item cannot be over 240 characters');
+		}
+		$todo_array[] = $additem;
+		$todolist->write($todo_array);
+	} catch(UnexpectedException $e){
+		echo $e->getMessage();
 	}
+			
+
+}
 
 //create a way for files that are uploaded to be saved
 //this checks to make sure there is a file to upload and that there are no errors
