@@ -1,0 +1,57 @@
+body {
+	/*margin: 0px auto;*/
+	/*width:50%;*/
+	background: url(../images/desktop.png) no-repeat center center fixed;
+	background-size: cover;
+	text-align: center;
+}
+
+.page-header{
+	border-bottom: 2px solid #000;
+	background-color: white;
+}
+
+h1 {
+	font-family: 'Ultra', serif;
+}
+
+ul {
+	list-style: none;
+}
+
+#border {
+	font-size: 20px;
+}
+
+#scribble {
+	font-family: 'Shadows Into Light', cursive;
+	font-size: 23px;
+	margin: 0px auto;
+}
+.header {
+	color: #1ec0a7;
+	/*text-decoration: underline;*/
+	font-family: 'Special Elite', cursive;
+  	text-shadow: 2px 2px 0px rgba(0,0,0,0.1);;
+  	font-size: 3em;
+}
+
+
+.newitem{
+	font-family: 'Quicksand', sans-serif;
+	font-size: 20px;
+	/*border: 5px double black;
+	height: 60px;
+	width: 300px;
+	padding: 10px;
+	margin: 0px auto;*/
+}
+
+#yellowpaper {
+	position: fixed;
+	top: 40px;
+	left: 50%;
+	width: 400px;
+	margin-left: -200px;
+	z-index: -2;
+}
